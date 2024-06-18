@@ -738,8 +738,6 @@ ggplot() +
 ---
 
 
----
-
 ## <span style="color:#88398A">Capas de un gráfico</span>
 
 - Si hay más de un conjunto de datos en el gráfico poner los datos en la capa que corresponda ser utilizados.
