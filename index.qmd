@@ -1,0 +1,809 @@
+---
+title: <span style="color:#88398A"> Certificación en Ciencia de datos </span>
+subtitle: <span style="color:#88398A">Módulo 3 - Visualizaciones básicas en `ggplot2`</span>
+author: <span style="color:#88398A"> <font size="6">Natalia da Silva</span></font>
+date: today
+bibliography: bibliophd.bib
+date-format: YYYY[ -Módulo 3]
+format:
+  revealjs: 
+    theme: default
+    slide-number: c/t
+incremental: false
+embed-resources: true
+logo: logo.png
+widescreen: no
+code-line-numbers: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{css echo=FALSE}
+.small-code{
+  font-size: 50%  
+}
+```
+
+```{css echo=FALSE}
+.small-text{
+  font-size: 70%  
+}
+```
+
+```{r, echo=FALSE}
+library(knitr)
+library(kableExtra)
+library(datasauRus)
+library(gridExtra)
+library(patchwork)
+library(raster)
+library(tidyverse)
+library(scales)
+library(plotly)
+library(tsbox)
+library(RColorBrewer)
+```
+---
+
+## <span style="color:#88398A"> Vimos </span>
+
+-   Importancia de la visualización
+
+-   Porqué y para qué visualizar.
+
+-   Gramática de gráficos y conexión con ggplot2
+
+-   Definición de gráfico estadístico, usando la GG.
+
+-   ¿Porqué usar ggplot2?
+
+
+Veremos: Visualizaciones básicas con ggplot2 y uso de scales
+
+---
+
+
+
+## <span style="color:#88398A"> Recordamos </span>
+
+La gramática gráfica responde las siguientes preguntas:
+
+¿Qué es un gráfico estadístico
+
+¿Cómo describir un gráfico?
+
+¿Cómo crear un gráfico?
+
+
+
+---
+
+## <span style="color:#88398A"> Recordamos </span>
+
+
+**Un  gráfico estadístico es un mapeo de los datos a atributos estéticos (ejem: color, forma, tamaño) de objetos geométricos (ejem: puntos, lineas, barras)**
+
+[Libro ggplot2](https://ggplot2-book.org)
+
+## <span style="color:#88398A">`ggplot2` </span>
+- Paquete con un sustento teórico basado en la gramática gráfica.
+
+- Define la GGC (gramática gráfica en capas)
+
+---
+
+
+## <span style="color:#88398A">`ggplot2` </span>
+
+Componentes en gráficos con `ggplot2`:
+
+-  **data**
+-  **layers**
+-  **scales**
+-  **coord**
+-  **facetas**
+-  **theme**
+---
+
+
+
+## <span style="color:#88398A"> Tres componentes de todo plot </span>
+
+- **data**: datos a visualizar
+
+- **aes**: un conjunto de mapeos estéticos entre las variables en los datos y las propiedades visuales (ejem: color, tamaño). 
+
+- **layer**: al menos una capa que describe como representar cada observación. Las capas son creadas con la función **geom**.
+---
+
+
+## <span style="color:#88398A">  Visualización de datos </span> 
+
+- La visualización de datos se basa en los datos, resumir información.
+
+- Hay diferentes tipos de visualización para enfatizar en distintos aspectos de los datos.
+
+- Los datos contienen observaciones y variables, en una forma tabular ordenada las observaciones están en las filas, las variables en las columnas y en cada celda tenemos un único valor
+
+---
+
+## <span style="color:#88398A">  Visualización de datos </span> 
+
+- Todas las visualizaciones mapean valores en los datos en características cuantificables de un gráficos a las que llamamos elementos estéticos (aesthetics en `ggplot2` `aes()`)
+
+
+Libro "Fundamentals of Data visualization" [link](https://clauswilke.com/dataviz/index.html)  [@wilke2019fundamentals]
+
+---
+
+
+
+## <span style="color:#88398A"> Visualizaciones básicas </span> 
+
+¿Cuáles son las visualizaciones más importantes?
+
+Imposible de responder, pero algunos de ellos son:
+
+- Histogramas, gráfico de densidades,  barras, de series de tiempo (todos en una dimensión )
+
+- Diagrama de dispersión, gráfico de caja lado a lado (2-dim), gráfico de coordenaddas paralelas, mosaico (dos dimensiones o más)
+
+- Mapas (información geográfica)
+
+y más...
+---
+
+## <span style="color:#88398A"> ¿Porqué tantos tipos? </span>
+- Diferentes tipos de visualizaciones debido al tipo diferente de variables.
+
+- Énfasis: cada gráfico puede mostrar un aspecto diferente de los datos.
+
+
+
+---
+
+## <span style="color:#88398A"> Tipo de datos</span>
+
+ Punto clave para hacer visualización: entender el tipo de variable que tenemos
+
+- **Variable Continua:** una variables con infinitos números de valores, como tiempo, peso.
+
+- **Variable Discreta:** variables numéricas que puede tomar un cierto número de valores. Ejemplo, “número de estudiantes en la clase” 
+
+- **Variable Categórica:** variables que pueden ser definidas como grupos o categorías (color de pelo, nivel educativo, etc)
+
+- y más...
+---
+
+
+  
+## <span style="color:#88398A">Reglas EDA</span>
+  
+No hay reglas claras para hacer EDA (análisis exploratorio de datos) pero podemos empezar por algunas preguntas básicas:
+
+- ¿Cuál es la variabilidad de cierta variable?
+
+- ¿Cuál es la distribución de mis datos?
+
+- ¿Hay alguna relación entre alguna de las variables seleccionadas?
+
+- ¿Como covarian estas dos variables?
+
+---
+
+## <span style="color:#88398A">Distribución</span>
+
+Para identificar que herramientas usar en EDA deberíamos identificar que tipo de variables a analizar
+
+Ejemplo:
+
+- Variables Categóricas, nosotros podemos analizar la distribución usando un gráfico de barras.
+
+- Variables continuas, podemos analizar la distribución usando un histograma.
+
+---
+
+## <span style="color:#883984"> Datos, starwars</span>
+
+![](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3NoZXF1dnoyZm81bXZ0NmxxbDZ2Y3VkZ2ZjZXlvOGR1NHAxZGVzMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/dmypi9dyBfmOQ/giphy.gif)
+
+---
+
+## <span style="color:#883984"> Barras vs Histograma, starwars</span>
+::: columns
+::: {.column width="50%"}
+
+
+```{r, fig.height=3.5, fig.width=3.5, echo=FALSE}
+library(tidyverse)
+st1 <- starwars %>% filter(!is.na(gender)) %>%
+  ggplot() + geom_bar(aes(x = fct_infreq(gender, ordered =TRUE)))  + 
+  labs(x = "Sexo", y='Frecuencia')
+st1
+
+```
+<div class=small-text>
+- Variable: categórica/cualitativa
+- Barras separados por espacios de igual tamaño 
+- Barras pueden re-ordenarse y debería hacerse para mejorar la visualización 
+- Parámetro: ninguno
+</div>
+
+
+:::
+
+::: {.column width="50%"}
+<div class=small-text>
+```{r fig.height=3.5, fig.width=3.5, echo=FALSE}  
+st2 <- starwars %>% 
+  ggplot() + geom_histogram(aes(x = height), binwidth = 6) +
+  labs(x = "Altura", y = 'Frecuencia')
+st2
+```
+
+- Variable: continua/cuantitativa
+- Barras adyacentes
+- Barras no pueden ser re-ordenadas
+- Parámetro: ancho de la barra
+</div>
+:::
+
+:::
+
+---
+
+
+## <span style="color:#883984">  ¿Muestran lo mismo?</span>
+
+::: columns
+::: {.column width="40%"}
+<div class=small-text>
+- Histograma, gráfico de densidades, diagrama de puntos movidos y gráfico de caja
+
+- Cada gráfico  enfatiza algo distinto de los datos:
+asimetría, modalidad, simetría, brechas, atípicos
+
+- No hay un gráfico correcto, todos son útiles en algún sentido
+</div>
+:::
+
+::: {.column width="60%"}
+<div class=small-code>
+```{r, echo=FALSE, fig.width=6.5, fig.height=6.5}
+
+
+pl1 <- starwars %>% 
+  ggplot() + geom_histogram(aes(x = height), binwidth = 6) +
+  labs(x = "Altura", y ='Frecuencia') + scale_x_continuous(limits = c(5,300))
+
+pl2 <- starwars %>%
+  ggplot() + geom_density(aes(x = height)) + labs(x = "Altura", 'Densidad') +
+  scale_x_continuous(limits = c(5,300))
+
+
+pl3 <- starwars %>% 
+  ggplot() + geom_jitter(aes(x = height, y = 1)) +
+  labs(y = " ", x= 'Altura') + scale_x_continuous(limits = c(5,300))
+
+
+pl4 <- starwars %>% 
+  ggplot() +
+  geom_boxplot(aes(x = 1, y = height )) + coord_flip() +
+  labs(x = "", y = "Altura") + scale_y_continuous(limits = c(5,300))
+ 
+
+pl1 + pl2 + pl3 + pl4 + plot_layout(ncol = 2)
+```
+</div>
+:::
+:::
+---
+
+
+## <span style="color:#88398A">EDA, Covariación</span>
+  
+- Covariación es la tendencia de variación conjunta para los valores de dos o más variables.
+
+- La mejor forma de detectar la covariación es  visualizar la relación entre dos o más variables.
+
+- El tipo de variables es lo que va a definir como visualizar la covariación.
+
+---
+
+## <span style="color:#88398A">Datos: cangrejos</span>
+
+<div class="tenor-gif-embed" data-postid="19326808" data-share-method="host" data-aspect-ratio="1" data-width="70%"><a href="https://tenor.com/view/crab-party-gif-19326808">Crab Party GIF</a>from <a href="https://tenor.com/search/crab+party-gifs">Crab Party GIFs</a></div> <script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+
+---
+  
+## <span style="color:#88398A"> Categórica vs Continua</span>
+<div class=small-text>
+- Es común explorar la distibución  de una variable continua de acuerdo a una variable categórica
+
+- Histogramas (`geom_histogram()`) o densidades (`geom_density()`) coloreadas por una variable categórica  para comparar la distribuciones para cada categoría
+</div>
+
+```{r, fig.width=12, fig.height=4, fig.align="center", echo=FALSE}
+library(PPforest)
+p1 <- crab %>% 
+  ggplot() + geom_histogram(aes(x = FL, fill=Type), bins=20,alpha=0.5) + scale_fill_brewer(palette = "Dark2") + labs(y="Frequency", x="Frontal lobe length, mm", fill="Specie")
+
+p2 <- crab %>% 
+  ggplot() + geom_density(aes(x = FL, fill=Type), alpha=0.5) + labs(y= "Density",x="Frontal lobe length, mm", fill="Specie")
+
+
+p1 + p2
+```
+
+
+---
+
+## <span style="color:#88398A"> Categória vs Continua, gráfico de caja y violín</span>
+
+Gráfico de caja:
+
+- Vemos la distribución de los datos para variables continuas
+
+- Basado en las 5 medidas de resumen  (min, Q1, Q2, Q3, max).
+
+- Atípicos ( $Q1–1.5*IQR$ y  $Q3 + 1.5*IQR$)
+
+Violín: es una combinación entre el gráfico de cajas y el de densidades
+---
+
+
+
+## <span style="color:#88398A"> Categória vs Continua, gráfico de caja y violín</span>
+
+```{r, fig.width=12, fig.height=4, fig.align="center", echo=FALSE}
+b1 <- ggplot(data = crab) + geom_boxplot(aes(x = fct_reorder(Type,FL) , y = FL)) + labs(x = "Specie", y = "Frontal lobe length, mm")
+
+b2 <- ggplot(data = crab) + geom_violin(aes(x = fct_reorder(Type,FL) , y = FL)) + labs(x = "Specie", y = "Frontal lobe length, mm")
+
+b1 + b2 
+```
+
+
+--
+
+
+## <span style="color:#88398A"> Ejemplo propina </span>
+
+```{r echo=TRUE}
+# cargamos los datos 
+library(tidyverse)
+propinas <- read_csv("propina.csv")
+head(propinas)
+```
+---
+
+## <span style="color:#88398A">Tres componentes de todo plot</span>
+
+- **data**: propina
+- **aes**: total mapeado a la posición x , propina a la posición y.
+-  **layer**: puntos mediante `geom_point()`.
+
+```{r, echo = TRUE, fig.height = 4, fig.width = 4, warning = FALSE, message=FALSE, eval=FALSE }
+ggplot(data = propinas, aes(x = total, y = propina)) +  
+  geom_point() +
+  theme(aspect.ratio = 1)
+
+```
+`aspect.ratio` es el ratio entre el ancho y el alto
+---
+
+## <span style="color:#88398A">Diagrama de dispersión, datos propinas</span>
+```{r, echo = TRUE, fig.height = 4, fig.width = 4, warning = FALSE, message=FALSE, echo=FALSE }
+ggplot(data = propinas, aes(x = total, y = propina)) +  
+  geom_point() +
+  theme(aspect.ratio = 1)
+
+```
+---
+
+## <span style="color:#88398A">Ejemplos geoms()</span>
+```{r, echo=FALSE}
+propinas <- read_csv("propina.csv")
+```
+```{r, echo=TRUE}
+p <- ggplot(propinas, 
+            aes(x =  dia, y = propina))
+```
+- `p `  
+- `p + geom_point()` 
+- `p + geom_boxplot()`
+- `p + geom_violin()`
+
+```{r, fig.height=3, fig.width=15, echo=FALSE}
+p <- ggplot(propinas, 
+            aes(x =  dia, y = propina))
+
+library(gridExtra)
+
+p1 <- p + geom_point()
+p2 <- p + geom_boxplot()  
+p3 <- p + geom_violin()
+grid.arrange(p, p1, p2, p3, ncol = 4)
+```
+---
+
+
+
+  
+## <span style="color:#88398A"> Categórica vs categóricas</span>
+- Información a mostrar el conteo de observaciones para cada combinación
+
+- podemos usar `geom_count()`,  `geom_tile()`, `geom_bar()` ....
+
+---
+  
+## <span style="color:#88398A"> Categórica vs categóricas</span>
+  
+- `geom_count()` es una variante de `geom_point()`. 
+
+- Cuenta el número de observaciones en cada combinación y mapea el conteo en la correspondiente posición. 
+
+---
+
+## <span style="color:#88398A"> Categórica vs categóricas</span>
+  
+```{r, fig.height=4, fig.width=4, echo=TRUE}
+ggplot(propinas, 
+        aes(x =  dia, y = cantidad)) +
+  geom_count()
+
+```
+---
+
+  
+## <span style="color:#88398A"> Categórica vs categóricas</span>
+  
+- `geom_tile()` cada combinación de variables es pintada con un color que representa un valor de otra variable en escala continua de color.
+
+- Por defecto el más claro representa mayor cantidad.
+
+---
+## <span style="color:#88398A"> Categórica vs categóricas</span>
+
+```{r, echo=TRUE}
+
+aux <- with(propinas, table(dia,cantidad)) 
+
+head(aux)
+dt <- data.frame(aux)
+
+head(dt)
+
+
+
+```
+---
+
+## <span style="color:#88398A"> Categórica vs categóricas</span>
+```{r, fig.height=4, fig.width=5, echo=TRUE}
+
+ggplot(data = dt,
+        aes(x =  dia, y = cantidad)) +
+  geom_tile(aes(fill = Freq))
+
+```
+---
+
+## <span style="color:#88398A"> Categórica vs categóricas</span>
+
+- `geom_bar()` sirve para describir la distribución de variables categóricas, para cada categoría la altura de la barra es proporcional al número de caso en cada grupo. Se puede representar alternativamente en terminos de proporción o porcentaje.
+
+
+- Si queremos representar más de una variable categórica usamos gráficos de barras apilados (stacked bar graph).
+---
+
+  
+## <span style="color:#88398A"> Categórica vs categóricas</span>
+
+  `geom_bar()`
+  
+- Gráficos de barras apilados simples: pone los valores en segmentos  uno atrás de otro para cada categoría. El valor total de una barra es la suma de todos los segmentos. Sirve para comparar el **monto total para cada categoría**.
+
+- Gráficos de barras apilados 100%: muestra el porcentaje para cada categoría al interior de un grupo. Esto hace más sencillo de ver las **diferencias relativas entre grupos**.
+
+---
+
+
+## <span style="color:#88398A">Ejemplos geom </span>  
+```{r, echo=TRUE}
+p <- ggplot(propinas, aes(x = dia, 
+                fill = fuma)) 
+
+```
+- `p + geom_bar()`
+- `p + geom_bar(position="stack")` 
+- ` p + geom_bar(position="dodge")`  
+- `p + geom_bar(position="fill")`
+
+```{r, fig.width=30, echo=FALSE}
+p <- ggplot(propinas, aes(x = dia, 
+                fill = fuma)) 
+p1 <- p + geom_bar()
+p2 <- p + geom_bar(position="stack") + theme(legend.position = "none")
+p3 <- p + geom_bar(position="dodge") + theme(legend.position = "none")
+p4 <- p + geom_bar(position="fill")+ theme(legend.position = "none")
+library(patchwork)
+p1 + p2 + p3 + p4 + plot_layout(ncol = 4)
+#grid.arrange(p1,p2,p3,p4, ncol=4)
+```
+---
+
+
+## <span style="color:#88398A">Más ggplot2, scales </span>
+
+- Los datos hay que convertirlos desde unidades datos (moneda, sexo, etc) a unidades gráficas, aes (color,forma, etc) que se pueden representar en la computadora.
+
+- La conversión es llamada escalado y es realizada por `scales`
+
+- Los `scales` controlan el mapeo de los datos a los atributos estéticos  (aes)
+
+
+---
+
+
+## <span style="color:#88398A">Más ggplot2, scales </span>
+
+- Necesitamos un `scale` para cada `aes` y cada `scale` opera para todos los datos en el gráfico que permite un mapeo consistente entre los datos a los `aes`
+
+
+- Estas especificaciones estéticas que tienen sentido para R se describen en ` vignette("ggplot2-specs")` [link](https://cran.r-project.org/web/packages/ggplot2/vignettes/ggplot2-specs.html)
+---
+
+## <span style="color:#88398A">scales </span>
+
+- Mapeo estético (`aes`) solamente dice que una variable debe ser mapeada a un elemento estético pero no dice cómo debe ser.
+
+- Cuando mapeo una variable a `shape` usando  `aes(shape = x)`  no especifico la forma (`shape`) particular que debe tomar, se usa la de defecto.
+
+- Cuando uso  `aes(color = z)` no digo de que color debe ser
+
+- Describir el color, la forma, el tamaño etc (`color`, `shape`, `size`) a usar se hace mediante transformaciones en `scale`
+---
+
+## <span style="color:#88398A">scales</span>
+- `x` e `y`
+- `color` y `fill`
+- `size`
+- `shape`
+- `linetype`
+
+<div class=small-text>
+Las `scales` se modifican con una serie de funciones con el siguiente esquema de nombrado `scale_<aesthetic>_<type>`.  Mirar `scale_<tab>`  ver la lista de las funciones de `scale`.
+
+ejemplo: `scale_color_manual` para cambiar el color de forma manual
+</div>
+---
+
+## <span style="color:#88398A">`scales` disponibles</span>
+
+<img src="summary.png" width="700">
+---
+
+
+## <span style="color:#88398A"> Gramática de gráficos </span>
+
+```{r, echo = TRUE, fig.height = 5, fig.width = 6,  warning = FALSE, message=FALSE,fig.align="center", strip.white=TRUE }
+library(tidyverse)
+propinas <- read_csv("propina.csv")
+
+ggplot(data = propinas, aes(x = total, y = propina)) +
+                           geom_point( aes(colour = fuma)) 
+
+```
+---
+
+## <span style="color:#88398A"> Gramática de gráficos </span>
+Equivalente a: 
+
+```{r, echo = TRUE, eval=FALSE, fig.height = 5, fig.width = 6,  warning = FALSE, message=FALSE,fig.align="center", strip.white=TRUE }
+
+
+ggplot(data = propinas, 
+       aes(x = total, y = propina)) +
+       geom_point( aes(colour = fuma)) +
+       scale_x_continuous() + 
+       scale_y_continuous() + 
+       scale_colour_discrete()
+
+```
+---
+
+## <span style="color:#88398A"> Gramática de gráficos </span>
+Cambio los límites del eje x y valores que se incluyen:
+
+```{r, echo = TRUE, fig.height = 3, fig.width = 4,  warning = FALSE, message=FALSE,fig.align="center" }
+ggplot(data = propinas, 
+       aes(x = total, y = propina)) +
+       geom_point( aes(colour = fuma)) +
+       scale_x_continuous(limits = c(-10, 60),
+                          breaks = seq(-10, 60, 5)) + 
+       scale_y_continuous() + 
+       scale_colour_discrete()
+
+```
+---
+
+                     
+
+## <span style="color:#88398A">¿Qué hay atrás de este plot?</span>
+<div class=small-text>
+- Cada observación representada como un punto cuya posición está de acuerdo a dos variables (posición horizontal y vertical)
+
+- Cada punto tiene tamaño, color y forma estos atributos son llamados elementos estéticos (inglés aesthetics `aes` )
+
+-  Los `aes` son propiedades que pueden ser percibidas en el gráfico
+cada `aes` puede ser mapeado a una variable o fijado en un valor constante
+
+- `total` es mapeado a la posición horizontal, `propina`  a la posición vertical y `fuma` al color. Tamaño y forma no son mapeados a variables (valor por defecto) 
+
+</div>
+---
+
+
+
+## <span style="color:#88398A">¿Qué hay atrás de este plot?</span>
+
+```{r, warning = FALSE, message = FALSE, echo=FALSE}
+library(dplyr)
+propinas %>% select(total, propina, fuma) %>% head(n=3)
+
+```
+- Nuevos datos, mapeo de los elementos estéticos a los datos originales
+
+|x  | y | colour|
+|---|---|-------|
+|17.0|	1.01|	     No|		
+|10.3|	1.66|	     No|		
+|21.0|	3.5|	     No|		
+---
+
+
+## <span style="color:#88398A">Capas de un gráfico</span>
+
+- Los datos, mapeos estéticos, objetos geométricos y las transformaciones estadísticas  forman una **capa** 
+
+- Podemos tener un gráfico con muchas capas
+---
+
+## <span style="color:#88398A">Capas de un gráfico</span>
+
+ La gramática de capas define componentes de un gráfico:
+ 
+- datos y conjunto de mapeos de variables a elementos estéticos
+
+- una o más capas, cada capa tiene un elemento geométrico, una transformación estadística, una posición y opcional datos y aes 
+---
+
+
+## <span style="color:#88398A">Capas de un gráfico</span>
+
+```{r echo=TRUE, eval=FALSE}
+ggplot() +
+  layer(
+    data = propinas, mapping = aes(x = total, y = propina), 
+    geom = "point", stat = "identity", position = "identity"
+  ) +
+  scale_x_continuous() +
+  scale_y_continuous() +
+  coord_cartesian()
+
+```
+
+Equivalente a :
+
+```{r echo=TRUE, eval=FALSE}
+ggplot() +
+  geom_point(data = propinas, aes(x = total, y = propina)) 
+
+
+```
+---
+
+## <span style="color:#88398A">Capas de un gráfico</span>
+
+`stat`: es el nombre de la transformación estadística a utilizar. Para que los datos sean usados como están sin transformar se usa `stat ='identity'`. Más info https://rpubs.com/hadley/ggplot2-layers
+
+`position`: el método usado para ajustar sobreploteo.Más info https://rpubs.com/hadley/ggplot2-layers
+
+
+
+---
+
+
+
+## <span style="color:#88398A">Capas de un gráfico</span>
+
+Varios conjuntos de datos:
+
+```{r,  fig.width=5, fig.height=5}
+ggplot() +
+  geom_point(data = propinas, aes(x = total, y = propina)) +
+  geom_point(data = data.frame(x = 30, y = 6), aes(x, y), 
+             color = "red", size = 10)
+
+
+```
+---
+
+
+---
+
+## <span style="color:#88398A">Capas de un gráfico</span>
+
+- Si hay más de un conjunto de datos en el gráfico poner los datos en la capa que corresponda ser utilizados.
+
+- Si pongo los datos al inicio `ggplot(data = propina)` esos datos son usados en todas las capas
+
+- Si tengo una única capa la forma de especificar los `aes` no hace la diferencia
+pero si agrego capas hay diferencias según en que capa especifico el `aes`
+
+---
+
+## <span style="color:#88398A">Otros geoms</span>
+ 
+ Cuando substituimos `geom_pont()` por otro `geom` obtenemos un gráfico distinto.
+ Los `geom` más comunes:
+ 
+- `geom_smooth()`  
+- `geom_boxplot()`
+- `geom_histogram()` 
+- `geom_bar()`
+- `geom_path()` y `geom_lines()`
+
+cada `geom_` tiene asociados elementos estéticos particulares
+---
+
+
+
+## <span style="color:#88398A">Incluir labs</span>
+
+```{r, echo = TRUE, fig.height = 5, fig.width = 5,  warning = FALSE, message=FALSE}
+ggplot(data = propinas, aes(x = total, y = propina,
+                            color = sexo)) +
+  geom_point() +  theme(aspect.ratio = 1) +
+  labs(x = "Total de la cuenta", y = "Propina", color = "Sexo")
+   
+
+
+```
+---
+
+## <span style="color:#88398A">Incluir labs </span>
+```{r, echo = TRUE, fig.height = 5, fig.width = 5,  warning = FALSE, message=FALSE }
+ggplot(data = propinas, aes(x = total, y = propina,
+                            color = sexo))+
+  geom_point() + theme(aspect.ratio = 1) + 
+  scale_x_continuous(name ="Total de la cuenta") +
+  scale_y_continuous(name = "Propina") +
+  scale_color_discrete(name = "Sexo")
+```
+---
+
+## <span style="color:#88398A">Incluir labs </span>
+
+Sobrescribe el scale si aplico dos veces el mismo
+
+```{r, echo = TRUE, fig.height = 4, fig.width = 4,  warning = FALSE, message=FALSE }
+ggplot( data = propinas, aes(x = total, y = propina,
+                             color = sexo))+
+  geom_point() + theme(aspect.ratio = 1) + 
+  scale_x_continuous(name ="Total de la cuenta") +
+  scale_x_continuous(name ="Total") +
+  scale_y_continuous(name = "Propina") +
+  scale_color_discrete(name = "Sexo")
+```
+---
+
+
+## <span style="color:#88398A">Material del curso</span>
+
+Material del curso está bajo licencia Creative Commons BY-NC-SA 3.0
+
+<img src="cc.png" height="200px" width="400px" />
