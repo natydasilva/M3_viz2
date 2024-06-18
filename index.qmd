@@ -366,7 +366,12 @@ b1 + b2
 ```
 
 
---
+---
+
+## <span style="color:#88398A"> Ejemplo propina </span>
+
+![](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExa21ubjIwc3ZpaXo5djF1dGR6eGhqY3BnMzl3eXZkMXpqejV3N2dsMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/o0vwzuFwCGAFO/giphy.gif)
+---
 
 
 ## <span style="color:#88398A"> Ejemplo propina </span>
@@ -1036,7 +1041,7 @@ ggplot(data =  mpg, aes(x = displ, y =  cty, color =  hwy)) +
 ---
 
 ## <span style="color:#88398A">Tu turno </span>
-![](https://media.giphy.com/media/YlSIESTw3bjAC0BzJg/giphy.gif)
+![](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmhhZGtteXExcnh6OTN4NHAxamd3ZXl3eWVqMHU0MTM5cHQ5djI2diZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/fHlLVZr01n55jXMzQc/giphy.gif)
 ---
 
 
