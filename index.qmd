@@ -708,9 +708,9 @@ ggplot() +
 
 ## <span style="color:#88398A">Capas de un gráfico</span>
 
-`stat`: es el nombre de la transformación estadística a utilizar. Para que los datos sean usados como están sin transformar se usa `stat ='identity'`. Más info https://rpubs.com/hadley/ggplot2-layers
+`stat`: es el nombre de la transformación estadística a utilizar. Para que los datos sean usados como están sin transformar se usa `stat ='identity'`. Más info [https://rpubs.com/hadley/ggplot2-layers](https://rpubs.com/hadley/ggplot2-layers)
 
-`position`: el método usado para ajustar sobreploteo.Más info https://rpubs.com/hadley/ggplot2-layers
+`position`: el método usado para ajustar sobreploteo.Más info [https://rpubs.com/hadley/ggplot2-layers]()
 
 
 
@@ -799,6 +799,244 @@ ggplot( data = propinas, aes(x = total, y = propina,
   scale_y_continuous(name = "Propina") +
   scale_color_discrete(name = "Sexo")
 ```
+---
+
+## [Uso de color]{style="color:#88398A"}
+
+El color es un elemento estético clave para visualización de datos
+
+No es trivial
+
+Hay que tomar en cuenta:
+
+-   daltonimso, si es para imprimir o no...
+
+-   si hay o no elementos a resaltar
+
+-   el tipo de variables que voy a colorear
+---
+
+## [Fundamentos del uso de color]{style="color:#88398A"}
+
+Tres usos fundamentales del color:
+
+-   Para distinguir grupos entre si (productos, grupos de clientes, etc).
+
+-   Para representar valores de los datos (ventas, stock, tiempo, etc).
+
+-   Para resaltar algo.
+---
+
+## [1. Distinguir grupos o categorías]{style="color:#88398A"}
+
+Uso una escala de colores ***cualitativa***, debería satisfacer :
+
+-   Los colores deben ser claramente distintos unos de otros.
+
+-   Ninguno de los colores debería sobresalir relativo al resto.
+
+-   Los colores no deberían crear la impresión de que hay un orden.
+
+---
+
+## [Escala de colores cualitativa]{style="color:#88398A"}
+
+<img src="cuali.png" width="700"/>
+
+---
+
+## [2. Representar valores de los datos]{style="color:#88398A"}
+
+Uso escala de colores ***secuencial***, debería satisfacer:
+
+-   Secuencia de colores que claramente indica que valores son mayores o menores que otros y cuán distintos son dos valores específicos entre si.
+
+-   La escala necesita ser percibida como que varía uniformemente a través de su rango de valores.
+-   Escalas secuenciales deben basarse en una sola tonalidad (de gris oscuro a gris claro) or o múltiples tonalidades (de rojo oscuro a amarillo claro)
+
+---
+
+## [Escala de colores secuencial]{style="color:#88398A"}
+
+<img src="seq.png" width="700"/>
+
+---
+
+## [Escala de color divergente]{style="color:#88398A"}
+
+La usamos cuando necesito visualizar la desviación de los valores en mis datos en una de dos direcciones relativa a un punto medio neutral.
+
+<img src="div.png" width="700"/>
+
+## [3. Color como herramienta para resaltar]{style="color:#88398A"}
+
+Para reslatar elementos específicos en los datos.
+
+Una forma de enfatizar elementos relevantes en una figura para los lectores puede ser usando una escala de colores ***acentuada***
+
+<img src="acc.png" width="700"/>
+---
+
+## [Cambiar color manual]{style="color:#88398A"}
+
+```{r, echo = TRUE, fig.height = 5, fig.width = 5,  warning = FALSE, message=FALSE }
+
+propinas <- read_csv("propina.csv")
+ggplot(data = propinas, aes(x = total, y = propina, 
+                            color = sexo)) +
+  geom_point() +  theme(aspect.ratio = 1) +
+  labs(x = "Total de la cuenta", y = "Propina", color = "Sexo") +
+  scale_color_manual(values=c("#ffb554", "#6cc0a1"))
+```
+
+---
+
+## [Cambiar color manual]{style="color:#88398A"}
+
+```{r, echo = TRUE, fig.height = 5, fig.width = 5,  warning = FALSE, message=FALSE }
+ggplot(data = propinas, aes(x = total, y = propina, 
+                            color = sexo)) +
+  geom_point() +  theme(aspect.ratio = 1) +
+  labs(x = "Total de la cuenta", y = "Propina", color = "Sexo") +
+  scale_color_manual(values=c("#ffb554", "#6cc0a1"))
+```
+
+---
+
+## [Cambiar color brewer]{style="color:#88398A"}
+
+```{r, echo = TRUE, fig.height = 5, fig.width = 5,  warning = FALSE, message=FALSE }
+ggplot(data = propinas, aes(x = total, y = propina, 
+                            color = sexo)) +
+  geom_point() +  theme(aspect.ratio = 1) +
+  labs(x = "Total de la cuenta", y = "Propina", color = "Sexo") +
+ scale_colour_brewer(palette = "Dark2")
+```
+
+---
+
+## [Cambiar fill]{style="color:#88398A"}
+
+```{r, echo = TRUE, fig.height = 5, fig.width = 5,  warning = FALSE, message=FALSE }
+ggplot(data = propinas, aes(x = sexo, fill = sexo)) + 
+  labs(x = "Sexo", y = "Cantidad", color = "Sexo") +
+  geom_bar() + scale_fill_manual(values=c("#ffb554", "#6cc0a1"))
+
+ 
+```
+
+---
+
+## [Un poco más sobre color]{style="color:#88398A"}
+
+-   Es común el uso de la codificación de colores en la escala RGB (rojo, verde y azul).
+
+-   Esta escala tiene el problema de que no es uniforme desde el punto e vista de la percepción.
+
+-   La escala RGB hace difícil crear un mapeo de colores para una variable continua.
+
+-   Otra aproximación es usar el espacio de colores HCL que tiene tres componentes (Hue, chroma y luminicence).
+
+---
+
+## [Espacio de color HCL]{style="color:#88398A"}
+
+-   **Tono** (Hue) va desde 0 a 360 y define el color (rojo, verde....)
+
+-   **Croma** (Chroma) es la pureza del color y va e 0 (gris) al máximo que varía con la luminosidad.
+
+-   **Luminosidad** (Luminance) es la luminosidad del color, va de 0 (negro) a 1 (blanco)
+
+## [Escala de colores continuas]{style="color:#88398A"}
+
+-   Hay muchas formas de especificar escalas de colores continuas
+
+-   `ggplot2` permite seleccionar dos paletas mediante dos funciones `scale`
+
+-   `scale_fill_viridis_c()` y `scale_fill_distiller()`
+
+
+
+---
+
+## [Escala de colores continuas]{style="color:#88398A"}
+
+-   `scale_fill_viridis_c()` diseñada para ser percibida como uniforme tanto en color como blanco y negro.
+
+-   `scale_fill_distiller()` derivada de `ColorBrewer` donde vimos que `scale_color_brewer()` nos da los colores como paletas discretas
+
+---
+
+## [Escala de colores continuas]{style="color:#88398A"}
+
+```{r, echo=TRUE, fig.width=6, fig.height=5}
+library(tidyverse)
+ggplot(data =  mpg, aes(x = displ, y =  cty, color =  hwy)) +
+  geom_point(size = 3, alpha = 1/2) + theme(aspect.ratio = 1)+
+  scale_color_viridis_c()
+```
+
+---
+
+## [Escala de colores continuas]{style="color:#88398A"}
+
+```{r, echo=TRUE, fig.width=5, fig.height=5}
+ggplot(data =  mpg, aes(x = displ, y =  cty, color =  hwy)) +
+  geom_point(size = 3, alpha = 1/2) + theme(aspect.ratio = 1)+
+  scale_color_distiller()
+```
+
+---
+
+## [Escala de colores continuas]{style="color:#88398A"}
+
+-   Como hay muchas paletas en R hay un paquete `paletteer` que incluye muchas de ellas. Se identifica el nombre del paquete y la paleta separada por `::`
+
+-  `palettes_c_names` contienen la información de los paquetes, paletas y tipo
+
+
+---
+
+## [Escala de colores continuas]{style="color:#88398A"}
+
+```{r, echo=TRUE}
+library(paletteer)
+palettes_c_names %>% filter(package == 'viridis')
+```
+
+---
+
+## [Escala de colores continuas]{style="color:#88398A"}
+
+```{r, echo=TRUE, fig.width=5, fig.height=5}
+
+ggplot(data =  mpg, aes(x = displ, y =  cty, color =  hwy)) +
+  geom_point(size = 3, alpha = 1/2) + theme(aspect.ratio = 1)+
+  scale_color_paletteer_c(palette = "viridis::plasma")
+
+```
+
+---
+
+## [Escala de colores continuas]{style="color:#88398A"}
+
+-   Por defecto la `scale` para `color` o `fill` continuo es `scale_color_continous()` o `scale_fill_continous()`
+
+-   son equivalentes a usar `scale_color_gradient()` o `scale_fill_gradient()`
+
+---
+
+
+## [Escala de colores continuas]{style="color:#88398A"}
+
+-   Las escalas con gradiente da una forma robusta de crear cualquier color, hay que especificar 2 o más colores de referencia y `ggplot2` interpola linealmente entre ellos.
+
+-   Tres funciones :`scale_fill_gradient()` (gradiente con dos colores), `scale_fill_gradient2()` (gradiente con tres colores donde se especifica el punto medio) `scale_fill_gradientn()` un gradiente con n colores.
+
+---
+
+## <span style="color:#88398A">Tu turno </span>
+![](https://media.giphy.com/media/YlSIESTw3bjAC0BzJg/giphy.gif)
 ---
 
 
