@@ -675,6 +675,7 @@ propinas %>% select(total, propina, fuma) %>% head(n=3)
 - Los datos, mapeos estéticos, objetos geométricos y las transformaciones estadísticas  forman una **capa** 
 
 - Podemos tener un gráfico con muchas capas
+
 ---
 
 ## <span style="color:#88398A">Capas de un gráfico</span>
@@ -717,11 +718,7 @@ ggplot() +
 
 `position`: el método usado para ajustar sobreploteo.Más info [https://rpubs.com/hadley/ggplot2-layers]()
 
-
-
 ---
-
-
 
 ## <span style="color:#88398A">Capas de un gráfico</span>
 
@@ -732,10 +729,9 @@ ggplot() +
   geom_point(data = propinas, aes(x = total, y = propina)) +
   geom_point(data = data.frame(x = 30, y = 6), aes(x, y), 
              color = "red", size = 10)
-
-
 ```
 ---
+
 
 
 ## <span style="color:#88398A">Capas de un gráfico</span>
